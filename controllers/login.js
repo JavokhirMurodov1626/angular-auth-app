@@ -18,18 +18,18 @@ module.exports.login = async (req, res) => {
         error: "User is not registered, Sign Up first",
       });
     } else {
-      if(user[0].status==='blocked'){
-        res.json({
-          error:"Sorry you are blocked, ask someone to unclock you!"
-        })
-      }
       bcrypt.compare(password, user[0].password, async (err, result) => {
         //Comparing the hashed password
         if (err) {
           res.status(500).json({
             error: "Server error",
           });
-        } else if (result === true) {
+
+        } else if(user[0].status==='blocked'){
+          res.status(400).json({
+            error:"Sorry you are blocked, ask someone to unclock you!"
+          });
+        }else if (result === true) {
           const lastLoginTime = new Date().toISOString();
           await client.query("UPDATE users SET last_login = $1 WHERE id = $2", [
             lastLoginTime,
