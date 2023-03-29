@@ -7,7 +7,7 @@ module.exports.unblock = async (req, res) => {
     await client.query(`UPDATE users SET status=$1 WHERE id=ANY($2);`, [
       "active",
       userIds,
-    ]);
+    ]); 
     res.status(200).json({ message: "Selected users have been unblocked." });
   } catch (err) {
     console.log(err);
